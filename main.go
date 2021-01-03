@@ -65,8 +65,8 @@ func main() {
 
 	connStr := os.Getenv("SERVICEBUS_CONNECTION_STRING")
 	qName := os.Getenv("QUEUE_NAME")
-	if connStr == "" {
-		fmt.Println("FATAL: expected environment variable SERVICEBUS_CONNECTION_STRING not set")
+	if connStr == "" || qName == "" {
+		fmt.Println("FATAL: expected environment variable SERVICEBUS_CONNECTION_STRING or QUEUE_NAME not set")
 		return
 	}
 
@@ -77,17 +77,8 @@ func main() {
 		return
 	}
 
-	// Create a Service Bus Queue with required sessions enabled. This will ensure that all messages sent and received
-	// are bound to a session.
-	qm := ns.NewQueueManager()
-	qEntity, err := qm.Get(ctx, qName)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
 	// Create queue receiver
-	q, err := ns.NewQueue(qEntity.Name)
+	q, err := ns.NewQueue(qName)
 	if err != nil {
 		fmt.Println(err)
 		return
